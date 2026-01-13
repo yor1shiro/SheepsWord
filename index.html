@@ -1,0 +1,2480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheep's Word 🎀</title>
+    <link rel="icon" type="image/png" href="sheep2.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Coquette / Lace Palette */
+            --glass-bg: rgba(255, 255, 255, 0.82); /* Whiter box as requested */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.95);
+            --text-main: #5a4a4e; /* Softer dark brown/grey */
+            --text-accent: #e09ead; /* Dusty Pink */
+            --btn-hover: #fae1e6;
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.15);
+
+            /* Theme tokens (used by dark mode) */
+            --ui-surface: #ffffff;
+            --ui-text: #5a4a4e;
+            --ui-muted: #777;
+            --ui-border: #ffc1cc;
+            --ui-border-soft: #ffd6df;
+            --ui-accent: #ffb7c5;
+            --ui-accent-2: #d896a6;
+            
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Quicksand', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--ui-text);
+            /* Polished PInk Background */
+            background-color: #fff0f5; 
+            background-image: url('pink.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background-color 220ms ease, color 220ms ease;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 220ms ease;
+        }
+
+        body.dark {
+            background-color: #0f0d12;
+            color: #ffd1dc;
+            --ui-surface: #0f0d12;
+            --ui-text: #ffd1dc;
+            --ui-muted: #f1b8c6;
+            --ui-border: rgba(255, 183, 197, 0.65);
+            --ui-border-soft: rgba(255, 183, 197, 0.45);
+            --ui-accent: #ffb7c5;
+            --ui-accent-2: #ffb7c5;
+        }
+
+        body.dark::before {
+            background: rgba(10, 8, 12, 0.62);
+        }
+
+        /* Main Application Container - Clean & Tidy */
+        .app-window {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            width: 90%; 
+            height: 90%;
+            max-width: 1180px;
+            max-height: 820px;
+            background: var(--ui-surface);
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            overflow: hidden;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: background-color 220ms ease, box-shadow 220ms ease;
+        }
+
+        body.dark .app-window {
+            background: rgba(20, 16, 22, 0.96);
+            box-shadow: 0 18px 60px rgba(0,0,0,0.45);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- SIDEBAR (Left) --- */
+        .sidebar {
+            width: 260px;
+            background: rgba(255, 255, 255, 0.96);
+            border-right: 2px dashed #f8c3d3; /* Cute pink dashed separator */
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            flex-shrink: 0;
+            height: 100%;
+        }
+
+        body.dark .sidebar {
+            background: rgba(20, 16, 22, 0.75);
+            border-right-color: rgba(255, 183, 197, 0.45);
+        }
+
+        .brand-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Sheep - Bigger & Tidy */
+        .mascot-sm {
+            width: 140px; 
+            height: 140px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 14px rgba(255, 183, 197, 0.35));
+        }
+        .mascot-sm:hover { transform: rotate(5deg) scale(1.1); }
+
+        body.dark .mascot-sm {
+            filter: drop-shadow(0 0 18px rgba(255, 183, 197, 0.55));
+        }
+
+        .mascot-wrap {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            cursor: default;
+            outline: none;
+            user-select: none;
+        }
+
+        .mascot-wrap::before {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 45%, rgba(255, 183, 197, 0.55) 0%, rgba(255, 183, 197, 0.18) 45%, rgba(255, 183, 197, 0) 72%);
+            filter: blur(8px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body.dark .mascot-wrap::before {
+            background: radial-gradient(circle at 50% 45%, rgba(255, 183, 197, 0.75) 0%, rgba(255, 183, 197, 0.22) 48%, rgba(255, 183, 197, 0) 74%);
+        }
+
+        .mascot-wrap:focus-visible {
+            outline: 2px dotted #ffb7c5;
+            outline-offset: 6px;
+            border-radius: 18px;
+        }
+
+        .mascot-bubble {
+            position: absolute;
+            left: calc(100% + 12px);
+            top: 50%;
+            transform: translate(6px, -50%) scale(0.98);
+            opacity: 0;
+            pointer-events: none;
+            max-width: 210px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px dotted #ffc1cc;
+            box-shadow: 0 8px 18px rgba(255, 183, 197, 0.25);
+            color: #5a4a4e;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            line-height: 1.35;
+            text-align: center;
+            transition: opacity 160ms ease, transform 160ms ease;
+            z-index: 50;
+            white-space: normal;
+        }
+
+        body.dark .mascot-bubble {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.75);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+            color: #ffd1dc;
+        }
+
+        .mascot-bubble::after {
+            content: "";
+            position: absolute;
+            left: -7px;
+            top: 50%;
+            width: 14px;
+            height: 14px;
+            transform: translateY(-50%) rotate(45deg);
+            background: rgba(255, 255, 255, 0.98);
+            border-left: 1px dotted #ffc1cc;
+            border-bottom: 1px dotted #ffc1cc;
+        }
+
+        body.dark .mascot-bubble::after {
+            background: rgba(15, 13, 18, 0.92);
+            border-left-color: rgba(255, 183, 197, 0.75);
+            border-bottom-color: rgba(255, 183, 197, 0.75);
+        }
+
+        .mascot-wrap.show-bubble .mascot-bubble {
+            opacity: 1;
+            transform: translate(0px, -50%) scale(1);
+        }
+
+        .app-title {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            color: var(--ui-accent-2); /* Soft Pink Title */
+            text-shadow: none;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        body.dark .app-title { color: #f1b8c6; }
+        
+        /* Flex Logic */
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .sidebar.compact .sidebar-content {
+            display: none;
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 0 12px 0;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            border: 1px dotted #ffc1cc;
+            background: rgba(255,255,255,0.96);
+            color: var(--ui-accent-2);
+            font-family: var(--font-sans);
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            font-size: 0.62rem;
+            padding: 10px 12px;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-btn:hover { background: #fff0f5; border-color: #ffb7c5; }
+        .nav-btn.active { background: #ffb7c5; border-color: #ffb7c5; color: #fff; }
+
+        body.dark .nav-btn {
+            background: rgba(25, 20, 28, 0.85);
+            color: #f1b8c6;
+            border-color: rgba(255, 183, 197, 0.5);
+        }
+        body.dark .nav-btn:hover { background: rgba(255, 183, 197, 0.14); border-color: rgba(255, 183, 197, 0.75); }
+        body.dark .nav-btn.active { background: rgba(255, 183, 197, 0.88); color: #20131b; }
+
+        .theme-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 12px 0;
+        }
+
+        .theme-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            color: #d896a6;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        body.dark .theme-label { color: #f1b8c6; }
+
+        .theme-toggle {
+            width: 58px;
+            height: 30px;
+            border-radius: 999px;
+            border: 1px dotted #ffc1cc;
+            background: rgba(255,255,255,0.96);
+            position: relative;
+            cursor: pointer;
+            transition: background-color 220ms ease, border-color 220ms ease;
+            box-shadow: 0 4px 12px rgba(255, 183, 197, 0.18);
+        }
+
+        .theme-toggle::before {
+            content: "☀";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            opacity: 0.85;
+            color: #d896a6;
+        }
+
+        .theme-toggle::after {
+            content: "☾";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            opacity: 0.7;
+            color: #d896a6;
+        }
+
+        .theme-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffb7c5;
+            box-shadow: 0 6px 18px rgba(255, 183, 197, 0.45);
+            transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1), background-color 220ms ease;
+        }
+
+        .theme-toggle[aria-pressed="true"] .theme-knob {
+            transform: translateX(28px);
+            background: #f1b8c6;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(25, 20, 28, 0.85);
+            border-color: rgba(255, 183, 197, 0.55);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+        }
+
+        .section-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #aaa; /* Light Grey Header */
+            margin: 15px 0 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header span { display: flex; align-items: center; gap: 5px; color: #d896a6; } /* Pink Icon */
+
+        /* History List - Clean & White */
+        .history-wrapper {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: none;
+            background: transparent;
+            padding: 2px;
+        }
+        .history-wrapper::-webkit-scrollbar { width: 4px; }
+        .history-wrapper::-webkit-scrollbar-thumb { background: #f8c3d3; border-radius: 4px; }
+
+        .history-item {
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.98);
+            border: 1px dotted #ffc1cc; /* Dotted pink border */
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #666;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark .history-item {
+            background: rgba(25, 20, 28, 0.85);
+            color: rgba(242, 233, 237, 0.85);
+            border-color: rgba(255, 183, 197, 0.45);
+        }
+        .history-item::before { content: "♥"; font-size: 0.6rem; color: #ffb7c5; } 
+        .history-item:hover { color: #5a4a4e; background: #fff0f5; border-color: #ffb7c5; }
+
+        body.dark .history-item:hover {
+            color: rgba(242, 233, 237, 0.95);
+            background: rgba(255, 183, 197, 0.14);
+            border-color: rgba(255, 183, 197, 0.75);
+        }
+
+        /* Notes Area */
+        .notes-wrapper {
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            border: 2px dotted #ffc1cc; /* Dotted like the card */
+            border-radius: 15px;
+            padding: 15px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            background: rgba(255,255,255,0.98);
+            color: var(--ui-text);
+            resize: none;
+            outline: none;
+            transition: 0.3s;
+        }
+        textarea:focus { border-color: #ffb7c5; border-style: solid; }
+
+        body.dark textarea {
+            background: rgba(25, 20, 28, 0.75);
+            color: #ffd1dc;
+            border-color: rgba(255, 183, 197, 0.55);
+        }
+
+        .btn-small {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.98);
+            border: 2px solid #ffb7c5;
+            color: #ffb7c5;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+        }
+
+        body.dark .btn-small {
+            background: rgba(25, 20, 28, 0.75);
+            color: #f1b8c6;
+            border-color: rgba(255, 183, 197, 0.65);
+        }
+        .btn-small:hover { background: #ffb7c5; color: #fff; transform: translateY(-1px); }
+
+        /* --- MAIN CONTENT (Right) --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 56px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: rgba(255,255,255,0.96);
+            transition: background-color 220ms ease, color 220ms ease;
+        }
+
+        body.dark .main-content {
+            background: rgba(20, 16, 22, 0.45);
+        }
+        
+        /* Bow Decoration */
+        .deco-bow {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 0;
+            font-size: 1.8rem;
+            opacity: 0.8;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.05));
+            pointer-events: none;
+        }
+
+        /* Ensure Home content is centered within the available height */
+        #view-home.view.active {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .verse-card {
+            text-align: center;
+            max-width: 980px;
+            width: 100%;
+            position: relative;
+            z-index: 5;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            display: grid;
+            grid-template-columns: 1.15fr 0.95fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .home-left,
+        .home-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .home-left {
+            gap: 12px;
+        }
+
+        .home-right {
+            gap: 12px;
+        }
+
+        .verse-bubble {
+            border: 2px dotted #ffc1cc;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.98);
+            padding: 26px 26px;
+            box-shadow: 0 4px 15px rgba(255, 192, 203, 0.12);
+        }
+
+        body.dark .verse-bubble {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.65);
+        }
+
+        .extras-bubble {
+            margin-top: 0;
+            border: 2px dotted #ffc1cc;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.98);
+            padding: 20px 20px;
+            box-shadow: 0 4px 15px rgba(255, 192, 203, 0.10);
+        }
+
+        body.dark .extras-bubble {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.65);
+        }
+
+        @media (max-width: 900px) {
+            .verse-card {
+                max-width: 560px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .verse-bubble::-webkit-scrollbar,
+        .extras-bubble::-webkit-scrollbar { width: 6px; }
+
+        .verse-bubble::-webkit-scrollbar-thumb,
+        .extras-bubble::-webkit-scrollbar-thumb { background: #ffd6df; border-radius: 6px; }
+
+        .verse-header {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--ui-accent); /* Pastel Pink */
+            margin-bottom: 16px;
+            font-weight: 800;
+        }
+
+        .verse-text {
+            font-family: var(--font-serif);
+            font-size: 1.75rem;
+            line-height: 1.6;
+            color: var(--ui-text); /* Softer dark text */
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .verse-ref-badge {
+            display: inline-block;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #fff;
+            background: #ffb7c5; /* Matching Pastel Pink Pill */
+            padding: 10px 35px;
+            border-radius: 30px;
+            box-shadow: 0 5px 12px rgba(255, 183, 197, 0.4); /* Soft pink shadow */
+        }
+
+        body.dark .verse-ref-badge {
+            background: rgba(15, 13, 18, 0.92);
+            color: #ffb7c5;
+            border: 1px dotted rgba(255, 183, 197, 0.75);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+        }
+
+        .extras {
+            margin-top: 0;
+            display: grid;
+            gap: 10px;
+            text-align: left;
+        }
+
+        .extra-card {
+            border: 1px dotted #ffd6df;
+            border-radius: 16px;
+            padding: 12px 12px;
+            background: #fff;
+        }
+
+        body.dark .extra-card {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.55);
+        }
+
+        .extra-title {
+            font-family: var(--font-sans);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--ui-accent);
+            font-weight: 800;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .extra-text {
+            font-family: var(--font-sans);
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: var(--ui-text);
+        }
+
+        body.dark .verse-text,
+        body.dark .extra-text {
+            color: #ffd1dc;
+        }
+
+        .view {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .view.active { display: flex; }
+
+        .panel-card {
+            width: 100%;
+            max-width: 620px;
+            border: 2px dotted #ffc1cc;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 4px 15px rgba(255, 192, 203, 0.12);
+            padding: 22px 22px;
+        }
+
+        body.dark .panel-card {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.65);
+        }
+
+        /* Favorites: allow scrolling when there are many items */
+        #view-favorites .panel-card {
+            display: flex;
+            flex-direction: column;
+            max-width: 560px;
+            max-height: 560px;
+        }
+
+        #fav-list {
+            flex: 1;
+            min-height: 120px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding-right: 6px;
+        }
+
+        #fav-list::-webkit-scrollbar { width: 6px; }
+        #fav-list::-webkit-scrollbar-thumb { background: #ffd6df; border-radius: 6px; }
+
+        body.dark #fav-list::-webkit-scrollbar-thumb { background: rgba(255, 183, 197, 0.45); }
+
+        .panel-title {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            color: var(--ui-accent-2);
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        body.dark .panel-title { color: #f1b8c6; }
+
+        .field {
+            display: grid;
+            gap: 10px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px dotted #ffc1cc;
+            border-radius: 14px;
+            outline: none;
+            font-family: var(--font-sans);
+            color: var(--ui-text);
+            background: rgba(255,255,255,0.98);
+        }
+
+        body.dark .input {
+            background: rgba(25, 20, 28, 0.75);
+            color: #ffd1dc;
+            border-color: rgba(255, 183, 197, 0.55);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pill {
+            border: 2px solid #ffb7c5;
+            background: rgba(255,255,255,0.98);
+            color: #ffb7c5;
+            border-radius: 999px;
+            padding: 10px 14px;
+            font-family: var(--font-sans);
+            font-weight: 800;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        body.dark .pill {
+            background: rgba(25, 20, 28, 0.75);
+            color: #f1b8c6;
+            border-color: rgba(255, 183, 197, 0.65);
+        }
+
+        body.dark .pill:hover {
+            background: rgba(255, 183, 197, 0.88);
+            color: #20131b;
+        }
+        .pill:hover { background: #ffb7c5; color: #fff; transform: translateY(-1px); }
+        .pill.soft { border-style: dotted; }
+
+        .list {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .list-item {
+            border: 1px dotted #ffd6df;
+            border-radius: 16px;
+            padding: 12px 12px;
+            background: rgba(255,255,255,0.98);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.dark .list-item {
+            background: rgba(15, 13, 18, 0.92);
+            border-color: rgba(255, 183, 197, 0.45);
+        }
+
+        body.dark .list-item strong { color: #ffb7c5; }
+        body.dark .list-item small { color: rgba(255, 209, 220, 0.8); }
+
+        .list-item strong {
+            color: #d896a6;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+        }
+
+        .list-item small {
+            color: #777;
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+        }
+
+        .mini-btn {
+            border: none;
+            background: #fff0f5;
+            color: #d896a6;
+            border-radius: 14px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+        .mini-btn:hover { background: #ffb7c5; color: #fff; }
+
+        .calendar {
+            width: 100%;
+            max-width: 620px;
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .cal-cell {
+            border: 1px dotted #ffd6df;
+            border-radius: 14px;
+            padding: 10px 0;
+            text-align: center;
+            font-family: var(--font-sans);
+            font-weight: 800;
+            color: #8a6b73;
+            background: #fff;
+            user-select: none;
+        }
+        .cal-cell.muted { opacity: 0.45; }
+        .cal-cell.done { background: #fff0f5; border-color: #ffb7c5; color: #d896a6; }
+        .cal-cell.today { border-style: solid; }
+
+        body.dark .cal-cell {
+            background: rgba(15, 13, 18, 0.92);
+            color: #ffb7c5;
+            border-color: rgba(255, 183, 197, 0.45);
+        }
+
+        body.dark .cal-cell.muted { opacity: 0.35; }
+
+        body.dark .cal-cell.done {
+            background: rgba(255, 183, 197, 0.12);
+            border-color: rgba(255, 183, 197, 0.75);
+            color: #ffb7c5;
+        }
+
+        body.dark .cal-cell.today {
+            border-style: solid;
+            border-color: rgba(255, 183, 197, 0.9);
+        }
+
+        .tts-progress {
+            width: 220px;
+            height: 8px;
+            border-radius: 999px;
+            background: #ffe6ea;
+            overflow: hidden;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 150ms ease;
+            pointer-events: none;
+            position: relative;
+        }
+        .tts-progress.show { opacity: 1; }
+        .tts-bar {
+            height: 100%;
+            width: 0%;
+            background: #ffb7c5;
+            border-radius: 999px;
+        }
+
+        body.dark .tts-progress { background: rgba(255, 183, 197, 0.22); }
+
+        /* Controls */
+        .controls {
+            margin-top: 16px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .control-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.98);
+            border: 2px solid #fff0f5; /* Very subtle pink border */
+            color: #ffb7c5; /* Pastel Pink Icon */
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+        .control-btn:hover {
+            transform: translateY(-3px);
+            border-color: #ffb7c5;
+            color: #ffb7c5;
+            box-shadow: 0 8px 20px rgba(255, 183, 197, 0.25);
+        }
+
+        body.dark .control-btn {
+            background: rgba(25, 20, 28, 0.86);
+            border-color: rgba(255, 183, 197, 0.25);
+            color: #f1b8c6;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+        }
+
+        body.dark .control-btn:hover {
+            border-color: rgba(255, 183, 197, 0.75);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Loading */
+        .loader-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 18px;
+        }
+
+        body.dark .loader-overlay {
+            background: rgba(10, 8, 12, 0.55);
+        }
+        .spinner {
+            width: 30px; height: 30px;
+            border: 3px solid #ffe6ea;
+            border-top-color: #d48c9d;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .app-window { flex-direction: column; width: 95%; height: 90%; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 2px dashed #eecad5; padding: 10px; align-items: center; }
+            .sidebar-content { display: none; } /* Keep sidebar clean on mobile */
+            .brand-section { flex-direction: row; margin: 0; gap: 15px; }
+            .mascot-sm { width: 50px; height: 50px; }
+            .app-title { font-size: 1.4rem; margin: 0; }
+            .main-content { padding: 20px; }
+            .verse-text { font-size: 1.4rem; }
+
+            .mascot-bubble {
+                left: calc(100% + 10px);
+                top: 50%;
+                max-width: 180px;
+                font-size: 0.8rem;
+            }
+
+            .nav { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-window">
+        <div class="loader-overlay" id="loader">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand-section">
+                <!-- Small Coquette Sheep -->
+                <div class="mascot-wrap" id="mascot-wrap" tabindex="0" aria-describedby="mascot-bubble">
+                    <div class="mascot-bubble" id="mascot-bubble" role="tooltip" aria-hidden="true">God bless you! ♡</div>
+                    <img src="sheep2.png" alt="Sheep" class="mascot-sm">
+                </div>
+                <h1 class="app-title">Sheep's Word 🎀</h1>
+            </div>
+
+            <div class="nav" aria-label="Pages">
+                <button class="nav-btn active" data-view="home" type="button">Home</button>
+                <button class="nav-btn" data-view="mood" type="button">Mood</button>
+                <button class="nav-btn" data-view="prayer" type="button">Prayer</button>
+                <button class="nav-btn" data-view="favorites" type="button">Favorites</button>
+                <button class="nav-btn" data-view="calendar" type="button">Calendar</button>
+            </div>
+
+            <div class="theme-row" aria-label="Theme">
+                <div class="theme-label">Mode</div>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+                    <span class="theme-knob" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <div class="section-header">
+                    <span>⏳ History</span>
+                    <button id="btn-clear" style="border:none; background:none; color:#999; cursor:pointer; font-size:0.7rem;">x</button>
+                </div>
+                
+                <div class="history-wrapper">
+                    <ul class="history-list" id="history-list">
+                        <!-- Items -->
+                    </ul>
+                </div>
+
+                <div class="notes-wrapper">
+                    <div class="section-header"><span>♡ Journal</span></div>
+                    <textarea id="notes" placeholder="Write your heart out..."></textarea>
+                    <button class="btn-small" id="btn-save">Save Note</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main-content">
+            <div class="deco-bow">🎀</div>
+
+            <!-- HOME VIEW -->
+            <section class="view active" id="view-home" aria-label="Home">
+                <div class="verse-card">
+                    <div class="home-left">
+                        <div class="verse-bubble">
+                            <h2 class="verse-header">Today's Verse</h2>
+                            <p class="verse-text" id="verse-text">Loading...</p>
+                            <div class="verse-ref-badge" id="verse-ref">...</div>
+                        </div>
+
+                        <div class="controls" aria-label="Verse controls">
+                            <button class="control-btn" id="btn-new" title="New Verse">↻</button>
+                            <button class="control-btn" id="btn-copy" title="Copy">📋</button>
+                            <button class="control-btn" id="btn-fav" title="Favorite">♡</button>
+                            <button class="control-btn" id="btn-speak" title="Speak">🔊</button>
+                            <button class="control-btn" id="btn-pause" title="Pause/Resume" style="display:none;">⏸</button>
+                            <button class="control-btn" id="btn-stop" title="Stop" style="display:none;">⏹</button>
+                        </div>
+
+                        <div class="tts-progress" id="tts-progress" aria-hidden="true">
+                            <div class="tts-bar" id="tts-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="home-right">
+                        <div class="extras-bubble">
+                            <div class="extras">
+                                <div class="extra-card">
+                                    <div class="extra-title">Thoughts of Today’s Verse</div>
+                                    <div class="extra-text" id="thoughts-text">—</div>
+                                </div>
+                                <div class="extra-card">
+                                    <div class="extra-title">Today’s Prayer</div>
+                                    <div class="extra-text" id="prayer-text">—</div>
+                                </div>
+                                <div class="extra-card">
+                                    <div class="extra-title">Daily Challenge</div>
+                                    <div class="extra-text" id="challenge-text">—</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MOOD VIEW -->
+            <section class="view" id="view-mood" aria-label="Mood">
+                <div class="panel-card">
+                    <div class="panel-title">Pick a Mood ♡</div>
+                    <div class="row" style="margin-bottom: 14px;">
+                        <button class="pill" type="button" data-mood="anxious">Anxious</button>
+                        <button class="pill" type="button" data-mood="grateful">Grateful</button>
+                        <button class="pill" type="button" data-mood="lonely">Lonely</button>
+                        <button class="pill" type="button" data-mood="stressed">Stressed</button>
+                        <button class="pill" type="button" data-mood="joyful">Joyful</button>
+                    </div>
+
+                    <div class="extra-card" style="margin-top: 8px;">
+                        <div class="extra-title" id="mood-title">Mood Verse</div>
+                        <div class="extra-text" id="mood-verse">Choose a mood to get a verse.</div>
+                        <div style="margin-top: 10px; text-align: center;">
+                            <span class="verse-ref-badge" id="mood-ref" style="display:none;">—</span>
+                        </div>
+                        <div class="row" style="margin-top: 14px;">
+                            <button class="pill soft" type="button" id="btn-mood-again" style="display:none;">Try Another</button>
+                            <button class="pill soft" type="button" id="btn-mood-fav" style="display:none;">Save to Favorites</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PRAYER JOURNAL VIEW -->
+            <section class="view" id="view-prayer" aria-label="Prayer Journal">
+                <div class="panel-card">
+                    <div class="panel-title">Today’s Prayer Notes</div>
+                    <div class="extra-text" style="text-align:center; margin-bottom: 10px;" id="prayer-date">—</div>
+                    <div class="field">
+                        <textarea id="prayer-notes" placeholder="Write a little prayer, gratitude, or what’s on your heart…" style="height: 140px;"></textarea>
+                        <div class="row">
+                            <button class="pill" type="button" id="btn-prayer-save">Save</button>
+                            <button class="pill soft" type="button" id="btn-prayer-today">Go to Today</button>
+                        </div>
+                    </div>
+
+                    <div class="section-header" style="margin-top: 16px;"><span>♡ Past Prayer Days</span></div>
+                    <div class="list" id="prayer-days"></div>
+                </div>
+            </section>
+
+            <!-- FAVORITES VIEW -->
+            <section class="view" id="view-favorites" aria-label="Favorites">
+                <div class="panel-card">
+                    <div class="panel-title">Favorites ♡</div>
+                    <input class="input" id="fav-search" placeholder="Search favorites…" />
+                    <div class="row" style="margin-top: 12px;">
+                        <button class="pill soft" type="button" id="btn-fav-clear">Clear All</button>
+                    </div>
+                    <div class="list" id="fav-list"></div>
+                </div>
+            </section>
+
+            <!-- CALENDAR VIEW -->
+            <section class="view" id="view-calendar" aria-label="Calendar">
+                <div class="panel-card">
+                    <div class="panel-title">Streak + Calendar</div>
+                    <div class="row" style="margin-bottom: 10px;">
+                        <div class="extra-card" style="min-width: 240px;">
+                            <div class="extra-title">Current Streak</div>
+                            <div class="extra-text" id="streak-text" style="text-align:center; font-weight:800;">—</div>
+                        </div>
+                        <div class="extra-card" style="min-width: 240px;">
+                            <div class="extra-title">Days Visited</div>
+                            <div class="extra-text" id="visited-text" style="text-align:center; font-weight:800;">—</div>
+                        </div>
+                    </div>
+                    <div class="extra-text" style="text-align:center; margin-bottom: 10px;" id="month-title">—</div>
+                    <div class="calendar" id="calendar-grid"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            const apiBase = 'https://bible-api.com/';
+
+            let verseFetchController = null;
+            let prefetchController = null;
+            let prefetchQueue = [];
+            let prefetchInFlight = 0;
+
+            const DAILY_MS = 24 * 60 * 60 * 1000;
+
+            // Keep verses readable within the Home frame (no inner scrolling).
+            const MAX_VERSE_CHARS = 1400;
+            const MAX_VERSE_LINES = 18;
+
+            // Curated New Testament references (focused on message-like encouragement / clear guidance).
+            // (We still fetch the verse text from bible-api.com; we just control which references are allowed.)
+            const SHORT_NT_REFERENCES = [
+                'Matthew 5:9', 'Matthew 5:14', 'Matthew 6:33', 'Matthew 7:7', 'Matthew 11:28',
+                'Matthew 5:16', 'Matthew 5:44', 'Matthew 22:37', 'Matthew 28:20',
+                'Mark 10:27', 'Mark 12:30',
+                'Mark 11:24',
+                'Luke 1:37', 'Luke 6:31', 'Luke 11:9',
+                'Luke 12:32', 'Luke 15:7',
+                'John 1:5', 'John 3:16', 'John 8:12', 'John 10:10', 'John 11:25', 'John 13:34', 'John 14:6', 'John 14:27',
+                'John 15:5', 'John 15:12', 'John 16:33',
+                'Acts 16:31',
+                'Acts 1:8',
+                'Romans 5:8', 'Romans 8:28', 'Romans 8:31', 'Romans 10:9', 'Romans 12:12',
+                'Romans 12:2', 'Romans 12:18', 'Romans 15:13',
+                '1 Corinthians 13:4', '1 Corinthians 13:13', '1 Corinthians 10:13',
+                '1 Corinthians 15:58',
+                '2 Corinthians 5:17', '2 Corinthians 12:9',
+                '2 Corinthians 1:3-4',
+                'Galatians 5:22',
+                'Galatians 6:9',
+                'Ephesians 2:8', 'Ephesians 4:32', 'Ephesians 6:10',
+                'Ephesians 3:20',
+                'Philippians 4:6', 'Philippians 4:13',
+                'Philippians 4:8',
+                'Colossians 3:2',
+                'Colossians 3:12-14',
+                '1 Thessalonians 5:16', '1 Thessalonians 5:17', '1 Thessalonians 5:18',
+                '2 Thessalonians 3:3',
+                '1 Timothy 6:12',
+                '2 Timothy 1:7',
+                '2 Timothy 3:16-17',
+                'Titus 3:5',
+                'Hebrews 11:1', 'Hebrews 12:1', 'Hebrews 12:2',
+                'Hebrews 4:16',
+                'James 1:5', 'James 1:17',
+                'James 1:2-4', 'James 4:8',
+                '1 Peter 5:7',
+                '1 Peter 2:9',
+                '2 Peter 3:9',
+                '1 John 1:9', '1 John 4:7', '1 John 4:8', '1 John 4:19',
+                '1 John 3:1',
+                '1 John 5:14',
+                'Jude 1:24',
+                'Revelation 21:4'
+            ];
+
+            const PREFETCH_TARGET = 3;
+
+            const NEW_TESTAMENT_BOOKS = new Set([
+                'Matthew', 'Mark', 'Luke', 'John',
+                'Acts',
+                'Romans',
+                '1 Corinthians', '2 Corinthians',
+                'Galatians', 'Ephesians', 'Philippians', 'Colossians',
+                '1 Thessalonians', '2 Thessalonians',
+                '1 Timothy', '2 Timothy',
+                'Titus', 'Philemon',
+                'Hebrews',
+                'James',
+                '1 Peter', '2 Peter',
+                '1 John', '2 John', '3 John',
+                'Jude',
+                'Revelation'
+            ]);
+
+            // UI Refs
+            const elText = document.getElementById('verse-text');
+            const elRef = document.getElementById('verse-ref');
+            const elThoughts = document.getElementById('thoughts-text');
+            const elPrayer = document.getElementById('prayer-text');
+            const elChallenge = document.getElementById('challenge-text');
+            const elMascotWrap = document.getElementById('mascot-wrap');
+            const elMascotBubble = document.getElementById('mascot-bubble');
+            const elLoader = document.getElementById('loader');
+            const elHistory = document.getElementById('history-list');
+            const elNotes = document.getElementById('notes');
+            const btnSave = document.getElementById('btn-save');
+
+            const btnTheme = document.getElementById('theme-toggle');
+            const THEME_KEY = 'sw_theme';
+
+            function applyTheme(mode) {
+                const isDark = mode === 'dark';
+                document.body.classList.toggle('dark', isDark);
+                if (btnTheme) btnTheme.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch {}
+            }
+
+            function initTheme() {
+                let mode = 'light';
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved === 'dark' || saved === 'light') mode = saved;
+                } catch {}
+                applyTheme(mode);
+
+                if (btnTheme) {
+                    btnTheme.addEventListener('click', () => {
+                        const next = document.body.classList.contains('dark') ? 'light' : 'dark';
+                        applyTheme(next);
+                    });
+                }
+            }
+
+            const btnFav = document.getElementById('btn-fav');
+            const btnPause = document.getElementById('btn-pause');
+            const btnStop = document.getElementById('btn-stop');
+            const elTtsProgress = document.getElementById('tts-progress');
+            const elTtsBar = document.getElementById('tts-bar');
+
+            const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
+            const views = {
+                home: document.getElementById('view-home'),
+                mood: document.getElementById('view-mood'),
+                prayer: document.getElementById('view-prayer'),
+                favorites: document.getElementById('view-favorites'),
+                calendar: document.getElementById('view-calendar')
+            };
+
+            const elMoodTitle = document.getElementById('mood-title');
+            const elMoodVerse = document.getElementById('mood-verse');
+            const elMoodRef = document.getElementById('mood-ref');
+            const btnMoodAgain = document.getElementById('btn-mood-again');
+            const btnMoodFav = document.getElementById('btn-mood-fav');
+
+            const elPrayerDate = document.getElementById('prayer-date');
+            const elPrayerNotes = document.getElementById('prayer-notes');
+            const elPrayerDays = document.getElementById('prayer-days');
+            const btnPrayerSave = document.getElementById('btn-prayer-save');
+            const btnPrayerToday = document.getElementById('btn-prayer-today');
+
+            const elFavSearch = document.getElementById('fav-search');
+            const elFavList = document.getElementById('fav-list');
+            const btnFavClear = document.getElementById('btn-fav-clear');
+
+            const elStreakText = document.getElementById('streak-text');
+            const elVisitedText = document.getElementById('visited-text');
+            const elMonthTitle = document.getElementById('month-title');
+            const elCalendarGrid = document.getElementById('calendar-grid');
+
+            let preferredVoice = null;
+            let currentVerse = null;
+            let moodVerse = null;
+            let selectedPrayerDate = null;
+
+            const tts = {
+                utterance: null,
+                timer: null,
+                startedAt: 0,
+                estimatedMs: 0,
+                paused: false,
+                boundarySeen: false,
+                fullText: '',
+                fullLen: 0,
+                startIndex: 0
+            };
+
+            function getToday() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            function setSaveButton(saved) {
+                btnSave.innerText = saved ? 'Saved ♡' : 'Save Note';
+            }
+
+            function normalizeReference(ref) {
+                if (!ref || typeof ref !== 'string') return '';
+                return ref.replace(/\s+/g, ' ').trim();
+            }
+
+            function clampText(text, maxLen) {
+                const t = (text || '').trim();
+                if (t.length <= maxLen) return t;
+                const cut = t.slice(0, maxLen - 1);
+                const lastSpace = cut.lastIndexOf(' ');
+                return (lastSpace > 40 ? cut.slice(0, lastSpace) : cut) + '…';
+            }
+
+            function hashStringToInt(str) {
+                // Deterministic, fast hash for stable daily outputs.
+                let h = 2166136261;
+                for (let i = 0; i < str.length; i++) {
+                    h ^= str.charCodeAt(i);
+                    h = Math.imul(h, 16777619);
+                }
+                return h >>> 0;
+            }
+
+            function pick(arr, seed) {
+                if (!arr.length) return '';
+                const idx = Math.abs(seed) % arr.length;
+                return arr[idx];
+            }
+
+            function detectTheme(text) {
+                const t = (text || '').toLowerCase();
+                const hasAny = (words) => words.some(w => t.includes(w));
+
+                if (hasAny(['fear', 'afraid', 'anxious', 'worry'])) return 'peace';
+                if (hasAny(['peace', 'rest', 'calm'])) return 'peace';
+                if (hasAny(['love', 'beloved'])) return 'love';
+                if (hasAny(['forgive', 'mercy', 'grace'])) return 'grace';
+                if (hasAny(['strength', 'strong', 'power', 'endure'])) return 'strength';
+                if (hasAny(['wisdom', 'understanding', 'ask'])) return 'wisdom';
+                if (hasAny(['faith', 'believe', 'trust'])) return 'faith';
+                if (hasAny(['hope'])) return 'hope';
+                if (hasAny(['serve', 'kind', 'gentle', 'patience'])) return 'kindness';
+                return 'general';
+            }
+
+            function makeDailyChallenge(v) {
+                const ref = normalizeReference(v && v.ref);
+                const text = (v && v.text) ? String(v.text).trim() : '';
+                const seed = hashStringToInt(`${ref}||${text}||challenge`);
+                const theme = detectTheme(text);
+                const byTheme = {
+                    peace: [
+                        'Take a 60-second prayer break when you feel anxious.',
+                        'Write down one worry, then hand it to God in prayer.',
+                        'Speak one peaceful sentence over yourself today.'
+                    ],
+                    love: [
+                        'Send one kind message to someone who needs love.',
+                        'Do one small act of love with no expectation back.',
+                        'Forgive a tiny offense quickly today.'
+                    ],
+                    grace: [
+                        'Give yourself permission to start fresh today.',
+                        'Practice mercy—assume the best in someone once.',
+                        'Say “I’m sorry” or “I forgive you” where needed.'
+                    ],
+                    strength: [
+                        'Do the next right step—just one—and ask God for strength.',
+                        'When you feel weak, whisper a short prayer before you continue.',
+                        'Encourage someone else who is tired today.'
+                    ],
+                    wisdom: [
+                        'Ask God for wisdom about one decision you’re making.',
+                        'Take 5 minutes of quiet before a big choice today.',
+                        'Write one thing you feel God nudging you toward.'
+                    ],
+                    faith: [
+                        'Choose one thing to trust God with today.',
+                        'Replace one negative thought with a promise from Scripture.',
+                        'Pray: “Lord, help my unbelief.”'
+                    ],
+                    hope: [
+                        'Write one hopeful sentence about your future in God.',
+                        'Thank God for one thing He’s already carried you through.',
+                        'Do one small thing that points your day toward hope.'
+                    ],
+                    kindness: [
+                        'Do one gentle, kind thing for someone quietly.',
+                        'Be patient in one moment where you usually rush.',
+                        'Bless someone in your thoughts instead of judging.'
+                    ],
+                    general: [
+                        'Take 2 minutes to pray before you scroll today.',
+                        'Write one gratitude and one request in your journal.',
+                        'Choose one kind thing to do today—small is perfect.'
+                    ]
+                };
+                return pick(byTheme[theme] || byTheme.general, seed);
+            }
+
+            function makeThoughtsAndPrayer(v) {
+                const ref = normalizeReference(v && v.ref);
+                const text = (v && v.text) ? String(v.text).trim() : '';
+                const seed = hashStringToInt(`${ref}||${text}`);
+                const theme = detectTheme(text);
+
+                const thoughtOpeners = [
+                    'This verse is a gentle reminder that',
+                    'Today, this verse invites you to remember that',
+                    'Let this verse re-center your heart:',
+                    'This is a quiet kind of courage:',
+                    'A simple truth for today is that'
+                ];
+
+                const thoughtByTheme = {
+                    peace: [
+                        'God meets you in the middle of your worry with peace that steadies you.',
+                        'you don’t have to carry tomorrow’s weight today—receive peace, one step at a time.',
+                        'you can breathe again—God is near, and His calm is stronger than your fear.'
+                    ],
+                    love: [
+                        'you are loved on purpose—nothing you do today can outrun God’s love.',
+                        'love is not just a feeling; it’s a choice you can practice in small, faithful ways.',
+                        'God’s love can soften what’s hardened and heal what’s hidden.'
+                    ],
+                    grace: [
+                        'God’s grace isn’t earned—it’s received, and it can restart your day.',
+                        'mercy makes room for change; you can begin again with God’s help.',
+                        'forgiveness is freedom—release what’s heavy and walk lighter.'
+                    ],
+                    strength: [
+                        'strength doesn’t mean you never struggle; it means you don’t struggle alone.',
+                        'God can carry you through what you can’t carry by yourself.',
+                        'you can keep going—God supplies strength for the next right step.'
+                    ],
+                    wisdom: [
+                        'you’re allowed to ask for wisdom—God delights in guiding you.',
+                        'clarity often comes one obedient step at a time.',
+                        'God can shape your choices with wisdom that’s gentle and true.'
+                    ],
+                    faith: [
+                        'faith can be small and still real—bring what you have to God.',
+                        'trust grows through daily surrender, not instant perfection.',
+                        'God is trustworthy even when you can’t see the whole picture.'
+                    ],
+                    hope: [
+                        'hope is a light you can hold onto—God is working even now.',
+                        'your story isn’t finished; God can bring beauty from today’s mess.',
+                        'God’s promises outlast your hardest season.'
+                    ],
+                    kindness: [
+                        'small acts of kindness can be holy—God can use you to brighten someone’s day.',
+                        'gentleness is strength under control; let love lead your words today.',
+                        'patience grows when you remember how patient God has been with you.'
+                    ],
+                    general: [
+                        'God is present with you today—steady, loving, and faithful.',
+                        'you can walk today with purpose; God can guide your next step.',
+                        'God’s word can shape your heart in quiet, powerful ways.'
+                    ]
+                };
+
+                const prayerOpeners = [
+                    'Lord,',
+                    'Jesus,',
+                    'Father God,',
+                    'God,',
+                    'Heavenly Father,'
+                ];
+
+                const prayerByTheme = {
+                    peace: [
+                        'calm my heart and help me rest in You today.',
+                        'replace my worry with Your peace and steady my thoughts.',
+                        'teach me to breathe, pray, and trust You with what I can’t control.'
+                    ],
+                    love: [
+                        'help me receive Your love and reflect it to others with tenderness.',
+                        'shape my words and actions to look like love today.',
+                        'heal what feels unlovable in me and make me bold in kindness.'
+                    ],
+                    grace: [
+                        'forgive me where I’ve fallen short and help me forgive quickly.',
+                        'teach me to live from grace, not pressure.',
+                        'give me a clean heart and a fresh start today.'
+                    ],
+                    strength: [
+                        'give me strength for what’s in front of me and courage for what’s hard.',
+                        'help me keep going, even when I feel weak.',
+                        'carry my burdens and teach me to lean on You.'
+                    ],
+                    wisdom: [
+                        'grant me wisdom and clarity in my decisions today.',
+                        'guide my steps and help me choose what honors You.',
+                        'help me hear Your voice above the noise.'
+                    ],
+                    faith: [
+                        'grow my faith and help me trust You more deeply today.',
+                        'help me believe Your promises even when my feelings waver.',
+                        'teach me to surrender control and follow You.'
+                    ],
+                    hope: [
+                        'fill me with hope and remind me that You are working in my life.',
+                        'lift my eyes toward Your promises when I feel discouraged.',
+                        'help me wait with patience and confidence in You.'
+                    ],
+                    kindness: [
+                        'make me gentle, patient, and kind in every conversation today.',
+                        'help me love people well, especially when it’s inconvenient.',
+                        'soften my heart and teach me to respond with grace.'
+                    ],
+                    general: [
+                        'help me walk with You today and keep my heart close to You.',
+                        'guide my thoughts, words, and actions to honor You.',
+                        'thank You for being with me; help me trust You today.'
+                    ]
+                };
+
+                const thoughts = `${pick(thoughtOpeners, seed)} ${pick(thoughtByTheme[theme] || thoughtByTheme.general, seed >>> 1)} ${clampText('Take one small step to live it out today.', 80)}`;
+                const prayer = `${pick(prayerOpeners, seed >>> 2)} ${pick(prayerByTheme[theme] || prayerByTheme.general, seed >>> 3)} Amen.`;
+
+                const cap = text.length > 900 ? 240 : 340;
+                return {
+                    thoughts: clampText(thoughts, cap),
+                    prayer: clampText(prayer, cap)
+                };
+            }
+
+            function setView(viewName) {
+                for (const [k, el] of Object.entries(views)) {
+                    if (!el) continue;
+                    el.classList.toggle('active', k === viewName);
+                }
+                navButtons.forEach(b => b.classList.toggle('active', b.dataset.view === viewName));
+
+                // Keep the sidebar tidy: only show History + Journal on Home.
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) sidebar.classList.toggle('compact', viewName !== 'home');
+                if (viewName !== 'home') stopTts();
+
+                // Render view-specific things on demand
+                if (viewName === 'favorites') renderFavorites();
+                if (viewName === 'calendar') renderCalendar();
+                if (viewName === 'prayer') {
+                    selectPrayerDate(getToday());
+                    renderPrayerDays();
+                }
+            }
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => setView(btn.dataset.view));
+            });
+
+            // --------- Favorites ---------
+            function loadFavorites() {
+                try {
+                    return JSON.parse(localStorage.getItem('favorites') || '[]');
+                } catch {
+                    return [];
+                }
+            }
+            function saveFavorites(list) {
+                localStorage.setItem('favorites', JSON.stringify(list));
+            }
+            function isFavorited(ref) {
+                const n = normalizeReference(ref);
+                return loadFavorites().some(f => normalizeReference(f.ref) === n);
+            }
+            function updateFavButton() {
+                if (!btnFav) return;
+                const on = currentVerse && isFavorited(currentVerse.ref);
+                btnFav.innerText = on ? '♥' : '♡';
+                btnFav.title = on ? 'Unfavorite' : 'Favorite';
+            }
+            function toggleFavorite(v) {
+                if (!v || !v.ref || !v.text) return;
+                const n = normalizeReference(v.ref);
+                let favs = loadFavorites();
+                const idx = favs.findIndex(f => normalizeReference(f.ref) === n);
+                if (idx >= 0) {
+                    favs.splice(idx, 1);
+                } else {
+                    favs.unshift({ ref: n, text: String(v.text).trim(), savedAt: new Date().toISOString() });
+                }
+                // keep it tidy
+                if (favs.length > 200) favs = favs.slice(0, 200);
+                saveFavorites(favs);
+                updateFavButton();
+            }
+            function renderFavorites() {
+                if (!elFavList) return;
+                const q = (elFavSearch && elFavSearch.value ? elFavSearch.value : '').toLowerCase().trim();
+                const favs = loadFavorites().filter(f => {
+                    const hay = `${f.ref} ${f.text}`.toLowerCase();
+                    return !q || hay.includes(q);
+                });
+                elFavList.innerHTML = '';
+                if (!favs.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'extra-text';
+                    empty.style.textAlign = 'center';
+                    empty.innerText = 'No favorites yet. Tap ♡ on a verse to save it.';
+                    elFavList.appendChild(empty);
+                    return;
+                }
+                favs.forEach(f => {
+                    const row = document.createElement('div');
+                    row.className = 'list-item';
+
+                    const left = document.createElement('div');
+                    left.style.display = 'grid';
+                    left.style.gap = '4px';
+                    const a = document.createElement('strong');
+                    a.innerText = f.ref;
+                    const b = document.createElement('small');
+                    b.innerText = clampText(f.text, 90);
+                    left.appendChild(a);
+                    left.appendChild(b);
+
+                    const right = document.createElement('div');
+                    right.style.display = 'flex';
+                    right.style.gap = '8px';
+
+                    const btnOpen = document.createElement('button');
+                    btnOpen.className = 'mini-btn';
+                    btnOpen.type = 'button';
+                    btnOpen.innerText = 'Open';
+                    btnOpen.onclick = () => {
+                        displayVerse({ ref: f.ref, text: f.text, date: f.savedAt || new Date().toISOString() });
+                        setView('home');
+                    };
+
+                    const btnDel = document.createElement('button');
+                    btnDel.className = 'mini-btn';
+                    btnDel.type = 'button';
+                    btnDel.innerText = 'Remove';
+                    btnDel.onclick = () => {
+                        const next = loadFavorites().filter(x => normalizeReference(x.ref) !== normalizeReference(f.ref));
+                        saveFavorites(next);
+                        updateFavButton();
+                        renderFavorites();
+                    };
+                    right.appendChild(btnOpen);
+                    right.appendChild(btnDel);
+
+                    row.appendChild(left);
+                    row.appendChild(right);
+                    elFavList.appendChild(row);
+                });
+            }
+
+            if (elFavSearch) elFavSearch.addEventListener('input', renderFavorites);
+            if (btnFavClear) btnFavClear.addEventListener('click', () => {
+                if (confirm('Clear all favorites?')) {
+                    localStorage.removeItem('favorites');
+                    updateFavButton();
+                    renderFavorites();
+                }
+            });
+
+            // --------- Prayer Journal (Daily) ---------
+            function loadPrayerMap() {
+                try {
+                    return JSON.parse(localStorage.getItem('prayerNotesByDate') || '{}');
+                } catch {
+                    return {};
+                }
+            }
+            function savePrayerMap(map) {
+                localStorage.setItem('prayerNotesByDate', JSON.stringify(map));
+            }
+            function selectPrayerDate(dateStr) {
+                selectedPrayerDate = dateStr;
+                if (elPrayerDate) elPrayerDate.innerText = dateStr;
+                const map = loadPrayerMap();
+                if (elPrayerNotes) elPrayerNotes.value = map[dateStr] || '';
+            }
+            function savePrayerForSelectedDate() {
+                if (!selectedPrayerDate || !elPrayerNotes) return;
+                const map = loadPrayerMap();
+                const val = elPrayerNotes.value || '';
+                if (val.trim().length) {
+                    map[selectedPrayerDate] = val;
+                } else {
+                    delete map[selectedPrayerDate];
+                }
+                savePrayerMap(map);
+                renderPrayerDays();
+            }
+            function renderPrayerDays() {
+                if (!elPrayerDays) return;
+                const map = loadPrayerMap();
+                const dates = Object.keys(map).sort().reverse();
+                elPrayerDays.innerHTML = '';
+                if (!dates.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'extra-text';
+                    empty.style.textAlign = 'center';
+                    empty.innerText = 'No prayer notes saved yet.';
+                    elPrayerDays.appendChild(empty);
+                    return;
+                }
+                dates.forEach(d => {
+                    const row = document.createElement('div');
+                    row.className = 'list-item';
+                    const left = document.createElement('div');
+                    left.style.display = 'grid';
+                    left.style.gap = '4px';
+                    const a = document.createElement('strong');
+                    a.innerText = d;
+                    const b = document.createElement('small');
+                    b.innerText = clampText(map[d], 90);
+                    left.appendChild(a);
+                    left.appendChild(b);
+                    const right = document.createElement('div');
+                    right.style.display = 'flex';
+                    right.style.gap = '8px';
+                    const btnOpen = document.createElement('button');
+                    btnOpen.className = 'mini-btn';
+                    btnOpen.type = 'button';
+                    btnOpen.innerText = 'Open';
+                    btnOpen.onclick = () => selectPrayerDate(d);
+                    const btnDel = document.createElement('button');
+                    btnDel.className = 'mini-btn';
+                    btnDel.type = 'button';
+                    btnDel.innerText = 'Delete';
+                    btnDel.onclick = () => {
+                        const m = loadPrayerMap();
+                        delete m[d];
+                        savePrayerMap(m);
+                        if (selectedPrayerDate === d) selectPrayerDate(getToday());
+                        renderPrayerDays();
+                    };
+                    right.appendChild(btnOpen);
+                    right.appendChild(btnDel);
+                    row.appendChild(left);
+                    row.appendChild(right);
+                    elPrayerDays.appendChild(row);
+                });
+            }
+            if (btnPrayerSave) btnPrayerSave.addEventListener('click', savePrayerForSelectedDate);
+            if (btnPrayerToday) btnPrayerToday.addEventListener('click', () => selectPrayerDate(getToday()));
+
+            // --------- Mood Picker ---------
+            const MOOD_REFERENCES = {
+                anxious: ['Philippians 4:6', 'John 14:27', '1 Peter 5:7', '2 Timothy 1:7', 'Matthew 11:28'],
+                stressed: ['Matthew 6:33', 'Romans 8:28', '2 Corinthians 12:9', 'Hebrews 12:2', 'Romans 8:31'],
+                lonely: ['John 1:5', 'John 8:12', 'Hebrews 12:1', 'Jude 1:24', 'Revelation 21:4'],
+                grateful: ['1 Thessalonians 5:18', 'James 1:17', 'Romans 12:12', 'Ephesians 2:8', 'Titus 3:5'],
+                joyful: ['1 Thessalonians 5:16', 'Galatians 5:22', 'John 10:10', 'John 3:16', '1 John 4:19']
+            };
+            let lastMood = null;
+
+            async function fetchMoodVerse(mood) {
+                if (!MOOD_REFERENCES[mood] || !MOOD_REFERENCES[mood].length) return null;
+                const refs = MOOD_REFERENCES[mood];
+                const ref = refs[Math.floor(Math.random() * refs.length)];
+                const v = await fetchVerseByReference(ref);
+                return v;
+            }
+
+            async function runMood(mood) {
+                lastMood = mood;
+                moodVerse = null;
+                if (elMoodTitle) elMoodTitle.innerText = `Mood Verse • ${mood}`;
+                if (elMoodVerse) elMoodVerse.innerText = 'Loading…';
+                if (elMoodRef) elMoodRef.style.display = 'none';
+                if (btnMoodAgain) btnMoodAgain.style.display = 'none';
+                if (btnMoodFav) btnMoodFav.style.display = 'none';
+
+                try {
+                    const v = await fetchMoodVerse(mood);
+                    if (!v || !v.text) throw new Error('No mood verse');
+                    moodVerse = v;
+                    if (elMoodVerse) elMoodVerse.innerText = `“${String(v.text).trim()}”`;
+                    if (elMoodRef) {
+                        elMoodRef.innerText = v.ref;
+                        elMoodRef.style.display = 'inline-block';
+                    }
+                    if (btnMoodAgain) btnMoodAgain.style.display = 'inline-block';
+                    if (btnMoodFav) btnMoodFav.style.display = 'inline-block';
+                } catch (e) {
+                    console.error('Mood verse failed:', e);
+                    if (elMoodVerse) elMoodVerse.innerText = 'Sorry—couldn’t load a mood verse right now.';
+                }
+            }
+
+            Array.from(document.querySelectorAll('[data-mood]')).forEach(btn => {
+                btn.addEventListener('click', () => runMood(btn.dataset.mood));
+            });
+            if (btnMoodAgain) btnMoodAgain.addEventListener('click', () => lastMood && runMood(lastMood));
+            if (btnMoodFav) btnMoodFav.addEventListener('click', () => {
+                if (moodVerse) {
+                    toggleFavorite(moodVerse);
+                    alert('Saved to favorites! ♡');
+                }
+            });
+
+            // --------- Streak + Calendar ---------
+            function loadVisitDates() {
+                try {
+                    return JSON.parse(localStorage.getItem('visitDates') || '[]');
+                } catch {
+                    return [];
+                }
+            }
+            function saveVisitDates(list) {
+                localStorage.setItem('visitDates', JSON.stringify(list));
+            }
+            function markVisitedToday() {
+                const today = getToday();
+                const set = new Set(loadVisitDates());
+                set.add(today);
+                const list = Array.from(set).sort();
+                saveVisitDates(list);
+            }
+            function computeStreak(datesSet) {
+                const today = new Date();
+                const iso = (d) => d.toISOString().split('T')[0];
+                let streak = 0;
+                for (let i = 0; i < 3650; i++) {
+                    const d = new Date(today);
+                    d.setDate(today.getDate() - i);
+                    const key = iso(d);
+                    if (datesSet.has(key)) streak++;
+                    else break;
+                }
+                return streak;
+            }
+            function renderCalendar() {
+                if (!elCalendarGrid) return;
+                const visited = new Set(loadVisitDates());
+                const streak = computeStreak(visited);
+                if (elStreakText) elStreakText.innerText = `${streak} day${streak === 1 ? '' : 's'} ♡`;
+                if (elVisitedText) elVisitedText.innerText = `${visited.size} total`;
+
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth();
+                const monthName = now.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+                if (elMonthTitle) elMonthTitle.innerText = monthName;
+
+                const first = new Date(year, month, 1);
+                const last = new Date(year, month + 1, 0);
+                const startDow = first.getDay(); // 0 Sun
+                const daysInMonth = last.getDate();
+
+                const labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+                elCalendarGrid.innerHTML = '';
+                labels.forEach(l => {
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell muted';
+                    c.innerText = l;
+                    elCalendarGrid.appendChild(c);
+                });
+
+                // pad
+                for (let i = 0; i < startDow; i++) {
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell muted';
+                    c.innerText = '';
+                    elCalendarGrid.appendChild(c);
+                }
+
+                const todayStr = getToday();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const d = new Date(year, month, day);
+                    const key = d.toISOString().split('T')[0];
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell';
+                    c.innerText = String(day);
+                    if (visited.has(key)) c.classList.add('done');
+                    if (key === todayStr) c.classList.add('today');
+                    c.title = visited.has(key) ? 'Visited' : '';
+                    elCalendarGrid.appendChild(c);
+                }
+            }
+
+            function setupMascotGreetings() {
+                if (!elMascotWrap || !elMascotBubble) return;
+
+                const greetings = [
+                    'God bless you! ♡',
+                    'Jesus loves you, sweet friend.',
+                    'Peace be with you today.',
+                    'You are so loved—keep going.',
+                    'May your day be gentle and blessed.',
+                    'Praying you feel God’s comfort today.',
+                    'Grace upon grace for you today.',
+                    'May the Lord guide your steps today.',
+                    'You’re doing better than you think—God is with you.',
+                    'A little reminder: breathe and trust God.'
+                ];
+
+                let lastIndex = -1;
+                const pickGreeting = () => {
+                    if (greetings.length === 1) return greetings[0];
+                    let idx = Math.floor(Math.random() * greetings.length);
+                    if (idx === lastIndex) idx = (idx + 1) % greetings.length;
+                    lastIndex = idx;
+                    return greetings[idx];
+                };
+
+                const show = () => {
+                    elMascotBubble.textContent = pickGreeting();
+                    elMascotWrap.classList.add('show-bubble');
+                    elMascotBubble.setAttribute('aria-hidden', 'false');
+                };
+
+                const hide = () => {
+                    elMascotWrap.classList.remove('show-bubble');
+                    elMascotBubble.setAttribute('aria-hidden', 'true');
+                };
+
+                elMascotWrap.addEventListener('mouseenter', show);
+                elMascotWrap.addEventListener('mouseleave', hide);
+                elMascotWrap.addEventListener('focus', show);
+                elMascotWrap.addEventListener('blur', hide);
+                elMascotWrap.addEventListener('keydown', (e) => {
+                    // Space/Enter = refresh greeting while focused
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        show();
+                    }
+                    if (e.key === 'Escape') {
+                        hide();
+                        elMascotWrap.blur();
+                    }
+                });
+            }
+
+            function getBookFromReference(ref) {
+                const r = normalizeReference(ref);
+                if (!r) return '';
+                // Remove everything from the first ":" or digit group onward.
+                // Examples:
+                //  - "John 3:16" -> "John"
+                //  - "1 John 4:19" -> "1 John"
+                return r.replace(/\s+\d.*$/, '').trim();
+            }
+
+            function isNewTestamentReference(ref) {
+                const book = getBookFromReference(ref);
+                return Boolean(book && NEW_TESTAMENT_BOOKS.has(book));
+            }
+
+            function isAllowedDailyReference(ref) {
+                // Enforce our curated NT list for the DAILY verse.
+                const n = normalizeReference(ref);
+                return SHORT_NT_REFERENCES.includes(n);
+            }
+
+            function isAcceptableVerse(v) {
+                if (!v || typeof v !== 'object') return false;
+                const text = typeof v.text === 'string' ? v.text.trim() : '';
+                const ref = normalizeReference(v.ref);
+                if (!text || !ref) return false;
+                if (text.length > MAX_VERSE_CHARS) return false;
+                const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                if (lines.length > MAX_VERSE_LINES) return false;
+                if (!isNewTestamentReference(ref)) return false;
+                return true;
+            }
+
+            function pickRandomShortReference() {
+                const idx = Math.floor(Math.random() * SHORT_NT_REFERENCES.length);
+                return SHORT_NT_REFERENCES[idx];
+            }
+
+            function startPrefetching() {
+                if (prefetchController) {
+                    try { prefetchController.abort(); } catch {}
+                }
+                prefetchController = new AbortController();
+                refillPrefetchQueue();
+            }
+
+            async function refillPrefetchQueue() {
+                if (prefetchInFlight) return;
+                if (prefetchQueue.length >= PREFETCH_TARGET) return;
+                if (!prefetchController) prefetchController = new AbortController();
+
+                prefetchInFlight++;
+                try {
+                    while (prefetchQueue.length < PREFETCH_TARGET) {
+                        const v = await fetchShortNtVerse(prefetchController.signal);
+                        if (isAcceptableVerse(v)) prefetchQueue.push(v);
+                        if (prefetchController.signal.aborted) break;
+                    }
+                } catch {
+                    // Prefetch is best-effort; ignore failures.
+                } finally {
+                    prefetchInFlight = Math.max(0, prefetchInFlight - 1);
+                }
+            }
+
+            async function fetchVerseByReference(reference, signal) {
+                const url = `${apiBase}${encodeURIComponent(reference)}`;
+                const res = await fetch(url, { cache: 'no-store', signal });
+                if (!res.ok) {
+                    throw new Error(`Bible API HTTP ${res.status}`);
+                }
+                const data = await res.json();
+                const text = (data && data.text ? String(data.text) : '').trim();
+                const ref = (data && data.reference ? String(data.reference) : reference).trim();
+                if (!text) throw new Error('Bible API returned empty text');
+                return {
+                    text,
+                    ref,
+                    date: new Date().toISOString()
+                };
+            }
+
+            async function fetchShortNtVerse(signal, maxAttempts = 14) {
+                let lastError = null;
+                for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                    const reference = pickRandomShortReference();
+                    try {
+                        const v = await fetchVerseByReference(reference, signal);
+                        if (!isAcceptableVerse(v)) continue;
+                        return v;
+                    } catch (e) {
+                        lastError = e;
+                        if (signal && signal.aborted) throw e;
+                    }
+                }
+                throw lastError || new Error('Unable to fetch a short New Testament verse.');
+            }
+
+            function shouldRefreshDailyVerse() {
+                const tsRaw = localStorage.getItem('lastVerseTs');
+                const ts = tsRaw ? Number(tsRaw) : 0;
+                const storedVerse = localStorage.getItem('dailyVerse');
+                if (!storedVerse || !ts || Number.isNaN(ts)) return true;
+                return (Date.now() - ts) >= DAILY_MS;
+            }
+
+            function loadStoredDailyVerse() {
+                const stored = localStorage.getItem('dailyVerse');
+                if (!stored) return null;
+                try {
+                    return JSON.parse(stored);
+                } catch {
+                    return null;
+                }
+            }
+
+            function scoreVoice(voice) {
+                const name = (voice.name || '').toLowerCase();
+                const lang = (voice.lang || '').toLowerCase();
+                let score = 0;
+
+                if (lang.startsWith('en')) score += 10;
+                if (name.includes('female')) score += 50;
+                if (name.includes('samantha')) score += 60;
+                if (name.includes('victoria')) score += 55;
+                if (name.includes('karen')) score += 55;
+                if (name.includes('tessa')) score += 55;
+                if (name.includes('moira')) score += 55;
+                if (name.includes('fiona')) score += 55;
+                if (name.includes('zira')) score += 55;
+                if (name.includes('aria')) score += 55;
+                if (name.includes('jenny')) score += 55;
+                if (name.includes('google uk english female')) score += 70;
+                if (name.includes('online')) score += 5;
+
+                return score;
+            }
+
+            function choosePreferredVoice() {
+                if (!window.speechSynthesis) return null;
+                const voices = window.speechSynthesis.getVoices() || [];
+                if (!voices.length) return null;
+
+                let best = null;
+                let bestScore = -1;
+                for (const v of voices) {
+                    const s = scoreVoice(v);
+                    if (s > bestScore) {
+                        bestScore = s;
+                        best = v;
+                    }
+                }
+                return best;
+            }
+
+            function ensureVoicesReady(timeoutMs = 800) {
+                if (!window.speechSynthesis) return Promise.resolve(false);
+                const existing = window.speechSynthesis.getVoices();
+                if (existing && existing.length) return Promise.resolve(true);
+
+                return new Promise((resolve) => {
+                    let done = false;
+                    const finish = (ok) => {
+                        if (done) return;
+                        done = true;
+                        resolve(ok);
+                    };
+
+                    const timer = setTimeout(() => {
+                        window.speechSynthesis.onvoiceschanged = null;
+                        finish(Boolean((window.speechSynthesis.getVoices() || []).length));
+                    }, timeoutMs);
+
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        clearTimeout(timer);
+                        window.speechSynthesis.onvoiceschanged = null;
+                        finish(true);
+                    };
+                });
+            }
+
+            function init() {
+                initTheme();
+                markVisitedToday();
+
+                const savedNotes = localStorage.getItem('userNotes');
+                if(savedNotes) elNotes.value = savedNotes;
+
+                setSaveButton(Boolean(elNotes.value && elNotes.value.trim().length));
+
+                renderHistory();
+
+                // Back-compat: if old date-based storage exists but no timestamp, treat as recently fetched.
+                const oldDate = localStorage.getItem('lastVerseDate');
+                const oldStored = loadStoredDailyVerse();
+                const hasTs = Boolean(localStorage.getItem('lastVerseTs'));
+                if (!hasTs && oldDate === getToday() && oldStored) {
+                    localStorage.setItem('lastVerseTs', String(Date.now()));
+                }
+
+                const stored = loadStoredDailyVerse();
+                const hasGoodStored = isAcceptableVerse(stored) && isAllowedDailyReference(stored.ref);
+
+                // If the stored verse is invalid (e.g., Old Testament / missing ref / "Unknown"), replace it immediately.
+                if (!hasGoodStored) {
+                    localStorage.removeItem('dailyVerse');
+                    localStorage.removeItem('lastVerseTs');
+                    localStorage.removeItem('lastVerseDate');
+                }
+
+                if (shouldRefreshDailyVerse()) {
+                    fetchVerse(true);
+                } else if (hasGoodStored) {
+                    displayVerse(stored);
+                } else {
+                    fetchVerse(true);
+                }
+
+                // Prime voices in the background.
+                if (window.speechSynthesis) {
+                    ensureVoicesReady().then(() => {
+                        preferredVoice = choosePreferredVoice();
+                    });
+                }
+
+                // Prefetch a few verses so the refresh button feels instant.
+                startPrefetching();
+            }
+
+            async function fetchVerse(isDaily) {
+                // If the user clicks refresh multiple times, only keep the latest request.
+                if (verseFetchController) {
+                    try { verseFetchController.abort(); } catch {}
+                }
+                verseFetchController = new AbortController();
+                const { signal } = verseFetchController;
+                const timeout = setTimeout(() => {
+                    try { verseFetchController.abort(); } catch {}
+                }, 8000);
+
+                // Don't flash the full-screen loader for quick refreshes.
+                let loaderTimer = null;
+                if (isDaily) {
+                    elLoader.style.display = 'flex';
+                } else {
+                    loaderTimer = setTimeout(() => {
+                        elLoader.style.display = 'flex';
+                    }, 250);
+                }
+                try {
+                    // For manual refresh: use a prefetched verse instantly when possible.
+                    let v = null;
+                    if (!isDaily && prefetchQueue.length) {
+                        v = prefetchQueue.shift();
+                        // top up in the background
+                        refillPrefetchQueue();
+                    }
+                    if (!v) {
+                        // Keep refresh snappy: try a handful of different curated refs, no artificial delays.
+                        v = await fetchShortNtVerse(signal);
+                        if (!isDaily) refillPrefetchQueue();
+                    }
+
+                    displayVerse(v);
+                    addToHistory(v);
+
+                    if (isDaily) {
+                        localStorage.setItem('dailyVerse', JSON.stringify(v));
+                        localStorage.setItem('lastVerseDate', getToday());
+                        localStorage.setItem('lastVerseTs', String(Date.now()));
+                    }
+                } catch(e) {
+                    // Don't wipe a previously shown daily verse if this is just a transient fetch error.
+                    console.error('Verse fetch failed:', e);
+                    if (signal && signal.aborted) return;
+                    const existing = loadStoredDailyVerse();
+                    if (isAcceptableVerse(existing)) {
+                        displayVerse(existing);
+                    } else {
+                        elText.innerText = "Error loading verse.";
+                        elRef.innerText = "";
+                    }
+                } finally {
+                    clearTimeout(timeout);
+                    if (loaderTimer) clearTimeout(loaderTimer);
+                    elLoader.style.display = 'none';
+                }
+            }
+
+            function displayVerse(v) {
+                let txt = v.text;
+                if(!txt.startsWith('"') && !txt.startsWith('“')) txt = `“${txt}”`;
+                elText.innerText = txt;
+                // Fix undefined bug: Check if ref exists
+                elRef.innerText = v.ref || "Unknown"; 
+
+                currentVerse = v;
+
+                const extras = makeThoughtsAndPrayer(v);
+                if (elThoughts) elThoughts.innerText = extras.thoughts;
+                if (elPrayer) elPrayer.innerText = extras.prayer;
+                if (elChallenge) elChallenge.innerText = makeDailyChallenge(v);
+
+                updateFavButton();
+            }
+
+            setupMascotGreetings();
+
+            function addToHistory(v) {
+                if(!v.ref) return; // Don't add invalid verses
+                let h = JSON.parse(localStorage.getItem('verseHistory') || '[]');
+                if(h.length && h[0].ref === v.ref) return;
+                h.unshift(v);
+                if(h.length > 50) h.pop();
+                localStorage.setItem('verseHistory', JSON.stringify(h));
+                renderHistory();
+            }
+
+            function renderHistory() {
+                const h = JSON.parse(localStorage.getItem('verseHistory') || '[]');
+                elHistory.innerHTML = '';
+                h.forEach(i => {
+                    const li = document.createElement('li');
+                    li.className = 'history-item';
+                    li.innerText = i.ref;
+                    li.onclick = () => displayVerse(i);
+                    elHistory.appendChild(li);
+                });
+            }
+
+            // Listeners
+            document.getElementById('btn-new').onclick = () => fetchVerse(false);
+            
+            document.getElementById('btn-clear').onclick = () => {
+                if(confirm('Clear history?')) {
+                    localStorage.removeItem('verseHistory');
+                    renderHistory();
+                }
+            };
+
+            btnSave.onclick = () => {
+                localStorage.setItem('userNotes', elNotes.value);
+                setSaveButton(true);
+            };
+
+            elNotes.addEventListener('input', () => {
+                setSaveButton(false);
+            });
+
+            document.getElementById('btn-copy').onclick = () => {
+                navigator.clipboard.writeText(`${elText.innerText} ${elRef.innerText}`);
+                alert("Copied! ♡");
+            };
+
+            if (btnFav) btnFav.addEventListener('click', () => {
+                if (currentVerse) toggleFavorite(currentVerse);
+            });
+
+            function showTtsUI(show) {
+                if (btnPause) btnPause.style.display = show ? 'inline-block' : 'none';
+                if (btnStop) btnStop.style.display = show ? 'inline-block' : 'none';
+                if (elTtsProgress) {
+                    elTtsProgress.classList.toggle('show', show);
+                    elTtsProgress.setAttribute('aria-hidden', show ? 'false' : 'true');
+                }
+            }
+
+            function cancelTtsPlayback() {
+                if (!window.speechSynthesis) return;
+                window.speechSynthesis.cancel();
+                tts.utterance = null;
+                tts.paused = false;
+                tts.boundarySeen = false;
+                if (tts.timer) {
+                    clearInterval(tts.timer);
+                    tts.timer = null;
+                }
+            }
+
+            function stopTts() {
+                cancelTtsPlayback();
+                if (elTtsBar) elTtsBar.style.width = '0%';
+                showTtsUI(false);
+            }
+
+            function estimateSpeechMs(text, rate) {
+                const len = String(text || '').length;
+                // Conservative estimate so the bar doesn't race ahead.
+                const cps = 8.5 * (rate || 1); // rough characters/second
+                const sec = Math.max(2.5, len / cps);
+                return sec * 1000;
+            }
+
+            function getSpeakText() {
+                return `${elText.innerText} ${elRef.innerText}`.trim();
+            }
+
+            function seekIndexNearWordBoundary(text, idx) {
+                const t = String(text || '');
+                const i = Math.max(0, Math.min(t.length - 1, idx));
+                // Try to land on a space for nicer restart.
+                const back = t.lastIndexOf(' ', i);
+                const forward = t.indexOf(' ', i);
+                if (back === -1 && forward === -1) return 0;
+                if (back === -1) return forward;
+                if (forward === -1) return back;
+                return (i - back) <= (forward - i) ? back : forward;
+            }
+
+            function setProgressPct(pct) {
+                const clamped = Math.max(0, Math.min(100, pct));
+                if (elTtsBar) elTtsBar.style.width = `${clamped}%`;
+            }
+
+            function startTtsSpeak(startIndex = 0) {
+                // IMPORTANT: Must stay synchronous for Brave/Chromium user-gesture rules.
+                if (!window.speechSynthesis) return;
+                // Refresh voice if available, but don't await anything (can break user activation).
+                preferredVoice = preferredVoice || choosePreferredVoice();
+
+                // If voices aren't loaded yet, kick off a background load for next time.
+                ensureVoicesReady().then(() => {
+                    preferredVoice = choosePreferredVoice() || preferredVoice;
+                });
+
+                // Cancel current speech but keep UI (we're about to restart).
+                cancelTtsPlayback();
+                const fullText = getSpeakText();
+                if (!fullText) return;
+
+                const safeStart = Math.max(0, Math.min(fullText.length, Number(startIndex) || 0));
+                const start = safeStart ? seekIndexNearWordBoundary(fullText, safeStart) : 0;
+                const chunk = fullText.slice(start).trimStart();
+                if (!chunk) return;
+
+                const u = new SpeechSynthesisUtterance(chunk);
+                if (preferredVoice) u.voice = preferredVoice;
+                u.rate = 0.92;
+                u.pitch = 1.08;
+                u.volume = 1;
+
+                tts.utterance = u;
+                tts.fullText = fullText;
+                tts.fullLen = fullText.length;
+                tts.startIndex = start;
+                tts.startedAt = Date.now();
+                tts.estimatedMs = estimateSpeechMs(chunk, u.rate);
+                tts.paused = false;
+                tts.boundarySeen = false;
+
+                showTtsUI(true);
+                if (btnPause) btnPause.innerText = '⏸';
+                setProgressPct(tts.fullLen ? (tts.startIndex / tts.fullLen) * 100 : 0);
+
+                u.onend = () => {
+                    setProgressPct(100);
+                    setTimeout(() => stopTts(), 450);
+                };
+                u.onerror = () => stopTts();
+
+                // Best-effort progress sync: boundary events give charIndex.
+                u.onboundary = (ev) => {
+                    if (typeof ev.charIndex !== 'number' || !tts.fullLen) return;
+                    tts.boundarySeen = true;
+                    const globalChar = Math.min(tts.fullLen, tts.startIndex + ev.charIndex);
+                    setProgressPct((globalChar / tts.fullLen) * 100);
+
+                    // If boundary events are working, stop the timer-based estimate.
+                    if (tts.timer) {
+                        clearInterval(tts.timer);
+                        tts.timer = null;
+                    }
+                };
+
+                tts.timer = setInterval(() => {
+                    if (tts.boundarySeen) return;
+                    const elapsed = Date.now() - tts.startedAt;
+                    const pct = Math.max(0, Math.min(100, Math.round((elapsed / tts.estimatedMs) * 100)));
+                    setProgressPct((tts.startIndex && tts.fullLen) ? Math.max((tts.startIndex / tts.fullLen) * 100, pct) : pct);
+                }, 120);
+
+                window.speechSynthesis.speak(u);
+            }
+
+            document.getElementById('btn-speak').onclick = () => startTtsSpeak();
+            if (btnPause) btnPause.addEventListener('click', () => {
+                if (!window.speechSynthesis) return;
+                if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+                    window.speechSynthesis.pause();
+                    tts.paused = true;
+                    if (btnPause) btnPause.innerText = '▶';
+                } else if (window.speechSynthesis.paused) {
+                    window.speechSynthesis.resume();
+                    tts.paused = false;
+                    if (btnPause) btnPause.innerText = '⏸';
+                }
+            });
+            if (btnStop) btnStop.addEventListener('click', stopTts);
+
+            if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => {
+                preferredVoice = choosePreferredVoice();
+            };
+
+            init();
+        })();
+    </script>
+</body>
+</html>
