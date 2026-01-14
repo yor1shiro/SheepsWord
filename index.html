@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sheep's Word 🎀</title>
-    <link rel="icon" type="image/png" href="sheep2.png">
+    <title>Sheep's Word</title>
+    <link rel="icon" type="image/png" href="sheep2.png" id="app-favicon">
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -992,9 +992,9 @@
                 <!-- Small Coquette Sheep -->
                 <div class="mascot-wrap" id="mascot-wrap" tabindex="0" aria-describedby="mascot-bubble">
                     <div class="mascot-bubble" id="mascot-bubble" role="tooltip" aria-hidden="true">God bless you! ♡</div>
-                    <img src="sheep2.png" alt="Sheep" class="mascot-sm">
+                    <img src="sheep2.png" alt="Sheep" class="mascot-sm" id="mascot-img">
                 </div>
-                <h1 class="app-title">Sheep's Word 🎀</h1>
+                <h1 class="app-title">Sheep's Word</h1>
             </div>
 
             <div class="nav" aria-label="Pages">
@@ -1247,6 +1247,8 @@
             const elChallenge = document.getElementById('challenge-text');
             const elMascotWrap = document.getElementById('mascot-wrap');
             const elMascotBubble = document.getElementById('mascot-bubble');
+            const elMascotImg = document.getElementById('mascot-img');
+            const elFavicon = document.getElementById('app-favicon');
             const elLoader = document.getElementById('loader');
             const elHistory = document.getElementById('history-list');
             const elNotes = document.getElementById('notes');
@@ -1259,6 +1261,10 @@
                 const isDark = mode === 'dark';
                 document.body.classList.toggle('dark', isDark);
                 if (btnTheme) btnTheme.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+
+                const sheepSrc = isDark ? 'sheep3.png' : 'sheep2.png';
+                if (elMascotImg && elMascotImg.getAttribute('src') !== sheepSrc) elMascotImg.setAttribute('src', sheepSrc);
+                if (elFavicon && elFavicon.getAttribute('href') !== sheepSrc) elFavicon.setAttribute('href', sheepSrc);
                 try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch {}
             }
 

@@ -1,0 +1,52 @@
+# --- Secrets / env files ---
+.env
+.env.*
+*.env
+
+# --- Keys / certs ---
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+
+# --- Local databases / dumps ---
+*.sqlite
+*.sqlite3
+*.db
+*.sql
+
+# --- Logs ---
+*.log
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.lnk
+
+.vscode/
+.idea/
+*.code-workspace
+
+# --- Python virtual envs / caches (even if not used now) ---
+.venv/
+venv/
+ENV/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Node (if you ever add tooling) ---
+node_modules/
+dist/
+build/
+
+# --- Misc ---
+*.bak
+*.swp
